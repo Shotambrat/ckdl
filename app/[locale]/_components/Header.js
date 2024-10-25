@@ -7,12 +7,11 @@ function Header({ locale }) {
   const t = useTranslations('Header.Navigation');
 
   const navOptions = [
-    { id: 1, name: t('ckdl'), url: 'https://mkdl.interlab.uz' },
-    { id: 2, name: t('analyze'), url: '/analyze' },
-    { id: 3, name: t('services'), url: '/services' },
-    { id: 4, name: t('doctors'), url: '/doctors' },
+    { id: 2, name: t('analyze'), url: '/' },
     { id: 5, name: t('addresses'), url: '/addresses' },
-    { id: 6, name: t('about'), url: '/about' }
+    { id: 3, name: t('services'), url: '/services' },
+    // { id: 4, name: t('doctors'), url: '/doctors' },
+    { id: 6, name: t('about'), url: '/ckdl' }
   ];
 
   return (

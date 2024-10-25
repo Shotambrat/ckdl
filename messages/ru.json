@@ -2,11 +2,11 @@
   "Header": {
     "Navigation": {
       "ckdl": "ЦКДЛ",
-      "analyze": "Анализы",
+      "analyze": "Главная",
       "services": "Услуги",
       "doctors": "Врачи",
-      "addresses": "Адреса",
-      "about": "О нас"
+      "addresses": "Пункты",
+      "about": "О проекте"
     },
     "results": "Результаты",
     "Login": {
@@ -82,11 +82,11 @@
     }
   },
   "Footer": {
-    "about": "О нас",
-    "sertificates": "Сертификаты",
-    "equipments": "Оборудование",
+    "about": "Главная",
+    "sertificates": "Пункты",
+    "equipments": "Услуги",
     "pricelist": "Прайслист - узнать цены",
-    "for-legal": "Для юридических лиц",
+    "for-legal": "О проекте",
     "preparation": "Как подготовиться к сдаче анализов",
     "feedback": "Предложения и жалобы",
     "rights": "Interlab Все права защищены",

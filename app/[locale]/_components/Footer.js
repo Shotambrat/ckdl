@@ -94,19 +94,19 @@ function Footer({ locale }) {
                 locale={locale}
                 links={[
                   { title: t("Footer.about"), url: "about" },
-                  { title: t("Footer.partners"), url: "partners" },
-                  { title: t("Footer.sertificates"), url: "about/licences" },
-                  // { title: t("Footer.equipments"), url: "" },
-                  { title: t("Footer.pricelist"), url: "analyze" },
+                  // { title: t("Footer.partners"), url: "partners" },
+                  { title: t("Footer.sertificates"), url: "addresses" },
+                  { title: t("Footer.equipments"), url: "services" },
+                  // { title: t("Footer.pricelist"), url: "analyze" },
                 ]}
               />
               <FooterSection
                 locale={locale}
                 links={[
-                  { title: t("Footer.for-legal"), url: "legal" },
-                  { title: t("Footer.preparation"), url: "instructions" },
-                  // { title: t("Footer.feedback"), url: "" },
-                  { title: t("Footer.vacancy"), url: "vacancies" },
+                  { title: t("Footer.for-legal"), url: "ckdl" },
+                  { title: t("Footer.feedback"), url: "" },
+                  { title: t("Footer.preparation"), url: "" },
+                  // { title: t("Footer.vacancy"), url: "vacancies" },
                 ]}
               />
             </div>

@@ -10,9 +10,9 @@ import Script from 'next/script';
 export const metadata = {
   title: {
     template: "%s",
-    default: "Interlab Innovation"
+    default: "CKDL by Interlab Innovation"
   },
-  description: "Intermed Innovation by Intermed",
+  description: "CKDL Project by Intermed Innovation",
   icons: {
     icon: '/favicon.ico'
   },
