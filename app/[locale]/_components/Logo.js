@@ -3,7 +3,7 @@ import logo from "@/public/images/header-logo-interlab.png";
 
 function Logo() {
   return (
-    <a href="/" className="flex items-center gap-4 transition-all duration-150">
+    <a href="https://interlab.uz" className="flex items-center gap-4 transition-all duration-150">
       <div className="hidden mdx:flex transition-all duration-150">
         <Image
           priority

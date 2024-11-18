@@ -11,7 +11,6 @@ const fetchToCount = async (counter) => {
     let response = await fetch(counter, {
       method: "POST",
     });
-    console.log("Response Of Count", response.json());
   } catch (error) {
     console.log("error to counter fetching", error);
   }
@@ -96,8 +95,8 @@ function Footer({ locale }) {
                   { title: t("Footer.about"), url: "about" },
                   // { title: t("Footer.partners"), url: "partners" },
                   { title: t("Footer.sertificates"), url: "addresses" },
-                  { title: t("Footer.equipments"), url: "services" },
-                  // { title: t("Footer.pricelist"), url: "analyze" },
+                  // { title: t("Footer.equipments"), url: "an" },
+                  { title: t("Footer.analyze"), url: "analyze" },
                 ]}
               />
               <FooterSection
@@ -105,7 +104,7 @@ function Footer({ locale }) {
                 links={[
                   { title: t("Footer.for-legal"), url: "ckdl" },
                   { title: t("Footer.feedback"), url: "" },
-                  { title: t("Footer.preparation"), url: "" },
+                  // { title: t("Footer.preparation"), url: "" },
                   // { title: t("Footer.vacancy"), url: "vacancies" },
                 ]}
               />

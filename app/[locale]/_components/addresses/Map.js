@@ -654,40 +654,97 @@ const clinicsLocations = [
 
 
 export default function Map() {
+  const YANDEX_API_KEY = process.env.NEXT_PUBLIC_YANDEX_API_KEY;
   const [clinics, setClinics] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-  const [isSearchButtonVisible, setIsSearchButtonVisible] = useState(true); // Новое состояние для управления кнопкой
-  const mapInstanceRef = useRef(null);
-  const userMarkerRef = useRef(null);
-  const activeRouteRef = useRef(null);
+  const [isSearchButtonVisible, setIsSearchButtonVisible] = useState(true);
   const [activeClinic, setActiveClinic] = useState(null);
+  const mapRef = useRef(null);
+  const ymapsRef = useRef(null);
+  const userPlacemarkRef = useRef(null);
+  const routeRef = useRef(null);
+  const clinicsPlacemarksRef = useRef([]);
 
   useEffect(() => {
-    if (!mapInstanceRef.current) {
-      initMap([41.311158, 69.279737], "/images/maps/geolocation.png");
-    }
+    const loadYMaps = () => {
+      return new Promise((resolve, reject) => {
+        if (typeof window === "undefined") return;
+        if (window.ymaps) {
+          resolve(window.ymaps);
+        } else {
+          const script = document.createElement("script");
+          script.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`;
+          script.onload = () => {
+            window.ymaps.ready(() => {
+              ymapsRef.current = window.ymaps;
+              resolve(window.ymaps);
+            });
+          };
+          script.onerror = reject;
+          document.head.appendChild(script);
+        }
+      });
+    };
+
+    loadYMaps().then((ymaps) => {
+      ymapsRef.current = ymaps;
+      initMap([41.311158, 69.279737]);
+    }).catch((error) => {
+      console.error("Ошибка загрузки Яндекс Карт:", error);
+    });
   }, []);
 
-  const initMap = (location, locIcon) => {
-    const mapElement = document.getElementById("map");
+  const initMap = (center) => {
+    const ymaps = ymapsRef.current;
+    if (!ymaps) return;
 
-    if (!mapElement._leaflet_id) {
-      const map = L.map("map").setView(location, 13);
-      mapInstanceRef.current = map;
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
-
-      const userIcon = L.icon({
-        iconUrl: locIcon,
-        iconSize: [50, 50],
-        iconAnchor: [25, 30],
+    if (!mapRef.current) {
+      mapRef.current = new ymaps.Map("map", {
+        center: center,
+        zoom: 13,
+        controls: ["zoomControl"],
       });
 
-      const marker = L.marker(location, { icon: userIcon }).addTo(map);
-      userMarkerRef.current = marker;
+      // Add initial user marker (optional, e.g., for the center)
+      const userIcon = {
+        iconLayout: "default#image",
+        iconImageHref: "/images/maps/geolocation.png",
+        iconImageSize: [50, 50],
+        iconImageOffset: [-25, -27],
+      };
+      const userPlacemark = new ymaps.Placemark(center, {}, userIcon);
+      mapRef.current.geoObjects.add(userPlacemark);
+      userPlacemarkRef.current = userPlacemark;
+
+      // Display all clinics on the map initially
+      clinicsLocations.forEach((clinic) => {
+        const clinicIconLayout = ymaps.templateLayoutFactory.createClass(`
+          <svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
+          </svg>
+        `);
+
+        const placemark = new ymaps.Placemark(
+          clinic.coords,
+          {
+            hintContent: clinic.name,
+            balloonContent: `<b>${clinic.name}</b><br>${clinic.address}<br>${clinic.graphic}`,
+          },
+          {
+            iconLayout: clinicIconLayout,
+            iconOffset: [-20, -57],
+          }
+        );
+
+        mapRef.current.geoObjects.add(placemark);
+        clinicsPlacemarksRef.current.push(placemark);
+
+        placemark.events.add("click", () => {
+          buildRoute(center, clinic.coords, clinic.id);
+        });
+      });
+    } else {
+      mapRef.current.setCenter(center, 13);
     }
   };
 
@@ -695,10 +752,11 @@ export default function Map() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        setUserLocation([latitude, longitude]);
-        updateMapToUserLocation([latitude, longitude]);
-        searchNearbyClinics([latitude, longitude]);
-        setIsSearchButtonVisible(false); // Скрыть кнопку после поиска
+        const userCoords = [latitude, longitude];
+        setUserLocation(userCoords);
+        updateMapToUserLocation(userCoords);
+        searchNearbyClinics(userCoords);
+        setIsSearchButtonVisible(false);
       });
     } else {
       alert("Геолокация не поддерживается вашим браузером.");
@@ -706,36 +764,27 @@ export default function Map() {
   };
 
   const updateMapToUserLocation = (location) => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.flyTo(location, 14);
-      if (userMarkerRef.current) {
-        userMarkerRef.current.setLatLng(location);
-      }
+    const ymaps = ymapsRef.current;
+    if (!ymaps || !mapRef.current) return;
+
+    mapRef.current.setCenter(location, 14);
+    if (userPlacemarkRef.current) {
+      userPlacemarkRef.current.geometry.setCoordinates(location);
+    } else {
+      const userIcon = {
+        iconLayout: "default#image",
+        iconImageHref: "/images/maps/geolocation.png",
+        iconImageSize: [50, 50],
+        iconImageOffset: [-25, -27],
+      };
+      const newPlacemark = new ymaps.Placemark(location, {}, userIcon);
+      mapRef.current.geoObjects.add(newPlacemark);
+      userPlacemarkRef.current = newPlacemark;
     }
   };
 
-  const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
-    const R = 6371;
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c;
-    return d;
-  };
-
-  const deg2rad = (deg) => {
-    return deg * (Math.PI / 180);
-  };
-
   const searchNearbyClinics = (userCoords) => {
-    const radius = 3;
-
+    const radius = 3; // Radius in km
     const nearbyClinics = clinicsLocations.filter((clinic) => {
       const distance = getDistanceFromLatLonInKm(
         userCoords[0],
@@ -747,62 +796,57 @@ export default function Map() {
     });
 
     setClinics(nearbyClinics);
-
+    // Highlight the nearby clinics on the map
     nearbyClinics.forEach((clinic) => {
-      const clinicIcon = L.divIcon({
-        className: "custom-clinic-icon",
-        html: `<svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
-        </svg>`,
-        iconSize: [44, 57],
-        iconAnchor: [22, 57],
-      });
-
-      const clinicMarker = L.marker(clinic.coords, { icon: clinicIcon })
-        .addTo(mapInstanceRef.current)
-        .bindPopup(
-          `<b>${clinic.name}</b><br>${clinic.address}<br>${clinic.graphic}`
-        );
-
-      clinicMarker.on("click", () => {
-        buildRoute(userCoords, clinic.coords, clinic.id);
-      });
+      const placemark = clinicsPlacemarksRef.current.find(
+        (p) => p.geometry.getCoordinates().toString() === clinic.coords.toString()
+      );
+      if (placemark) {
+        placemark.options.set("preset", "islands#redIcon");
+      }
     });
   };
 
   const buildRoute = (start, end, clinicId) => {
-    if (activeRouteRef.current) {
-      mapInstanceRef.current.removeControl(activeRouteRef.current);
+    const ymaps = ymapsRef.current;
+    if (!ymaps || !mapRef.current) return;
+
+    if (routeRef.current) {
+      mapRef.current.geoObjects.remove(routeRef.current);
     }
 
-    const newRouteControl = L.Routing.control({
-      waypoints: [L.latLng(start), L.latLng(end)],
-      routeWhileDragging: true,
-      createMarker: function (i, wp) {
-        return L.marker(wp.latLng, {
-          icon:
-            i === 0
-              ? userMarkerRef.current.options.icon
-              : userMarkerRef.current.options.icon,
+    ymaps.route([start, end]).then(
+      (route) => {
+        route.getPaths().options.set({
+          strokeColor: "red",
+          opacity: 0.7,
+          strokeWidth: 4,
         });
+        mapRef.current.geoObjects.add(route);
+        routeRef.current = route;
+        setActiveClinic(clinicId);
       },
-      lineOptions: {
-        styles: [{ color: "red", opacity: 0.7, weight: 4 }],
-      },
-    }).addTo(mapInstanceRef.current);
-
-    activeRouteRef.current = newRouteControl;
-    setActiveClinic(clinicId);
+      (error) => {
+        console.error("Не удалось построить маршрут:", error);
+      }
+    );
   };
 
-  const sortedClinics = activeClinic
-    ? [
-        clinics.find((clinic) => clinic.id === activeClinic),
-        ...[...clinics]
-          .reverse()
-          .filter((clinic) => clinic.id !== activeClinic),
-      ]
-    : [...clinics].reverse();
+  const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const deg2rad = (deg) => deg * (Math.PI / 180);
+
 
   return (
     <div className="w-full relative">
@@ -817,7 +861,7 @@ export default function Map() {
         )}
       </div>
       <div id="map" className="w-full z-0 h-[500px]"></div>
-      <Filter sortedClinics={sortedClinics} activeClinic={activeClinic} clinicsLocations={clinicsLocations} />
+      <Filter sortedClinics={clinics} activeClinic={activeClinic} clinicsLocations={clinicsLocations} />
     </div>
   );
 }

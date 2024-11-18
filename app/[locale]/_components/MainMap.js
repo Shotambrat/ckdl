@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import AddressItem from "@/app/[locale]/_components/addresses/AddressItem";
 import arrowRightRed from "@/public/svg/arrow-right.svg";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Link } from "@/i18n/routing";
 
 export default function Map() {
@@ -665,6 +664,9 @@ export default function Map() {
     // },
   ];
 
+
+
+
   useEffect(() => {
     const loadYMaps = () => {
       return new Promise((resolve, reject) => {
@@ -673,7 +675,7 @@ export default function Map() {
           resolve(window.ymaps);
         } else {
           const script = document.createElement("script");
-          script.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${YANDEX_API_KEY}`;
+          script.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`;
           script.onload = () => {
             window.ymaps.ready(() => {
               ymapsRef.current = window.ymaps;
@@ -709,26 +711,54 @@ export default function Map() {
     if (!ymaps) return;
 
     if (!mapRef.current) {
-      mapRef.current = new ymaps.Map("map", {
-        center: center,
-        zoom: 10,
-        controls: ["zoomControl"],
-      });
+        mapRef.current = new ymaps.Map("map", {
+            center: center,
+            zoom: 10,
+            controls: ["zoomControl"],
+        });
 
-      // Добавляем маркер в центре карты с иконкой геолокации
-      const iconContent = {
-        iconLayout: "default#image",
-        iconImageHref: "/images/maps/geolocation.png",
-        iconImageSize: [50, 50],
-        iconImageOffset: [-25, -27],
-      };
+        // Add user location marker (initial geolocation icon)
+        const iconContent = {
+            iconLayout: "default#image",
+            iconImageHref: "/images/maps/geolocation.png",
+            iconImageSize: [50, 50],
+            iconImageOffset: [-25, -27],
+        };
 
-      const centerPlacemark = new ymaps.Placemark(center, {}, iconContent);
-      mapRef.current.geoObjects.add(centerPlacemark);
+        const centerPlacemark = new ymaps.Placemark(center, {}, iconContent);
+        mapRef.current.geoObjects.add(centerPlacemark);
+
+        // Add all clinics' placemarks initially
+        clinicsLocations.forEach((clinic) => {
+            const clinicIconLayout = ymaps.templateLayoutFactory.createClass(`
+                <svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
+                </svg>
+            `);
+
+            const placemark = new ymaps.Placemark(
+                clinic.coords,
+                {
+                    hintContent: clinic.name,
+                    balloonContent: `<b>${clinic.name}</b><br>${clinic.address}<br>${clinic.graphic}`,
+                },
+                {
+                    iconLayout: clinicIconLayout,
+                    iconShape: {
+                        type: "Circle",
+                        coordinates: [0, 0],
+                        radius: 40,
+                    },
+                    iconOffset: [-20, -57],
+                }
+            );
+            mapRef.current.geoObjects.add(placemark);
+        });
     } else {
-      mapRef.current.setCenter(center, 13);
+        mapRef.current.setCenter(center, 13);
     }
-  };
+};
+
 
   const handleSearchClinics = () => {
     if (navigator.geolocation) {
@@ -776,62 +806,78 @@ export default function Map() {
   const searchNearbyClinics = (userCoords) => {
     const radius = 3; // Радиус в километрах
     const nearbyClinics = clinicsLocations.filter((clinic) => {
-      const distance = getDistanceFromLatLonInKm(
-        userCoords[0],
-        userCoords[1],
-        clinic.coords[0],
-        clinic.coords[1]
-      );
-      return distance <= radius;
+        const distance = getDistanceFromLatLonInKm(
+            userCoords[0],
+            userCoords[1],
+            clinic.coords[0],
+            clinic.coords[1]
+        );
+        return distance <= radius;
     });
 
     setClinics(nearbyClinics);
     displayClinicsOnMap(nearbyClinics);
-  };
+
+    if (nearbyClinics.length > 0) {
+        // Adjust the map to show all nearby clinics
+        const bounds = ymapsRef.current.geoQuery(nearbyClinics.map(clinic => clinic.coords))
+            .getBounds();
+        mapRef.current.setBounds(bounds, { checkZoomRange: true });
+    }
+};
+
 
   const displayClinicsOnMap = (clinics) => {
     const ymaps = ymapsRef.current;
     if (!ymaps || !mapRef.current) return;
 
-    // Удаляем предыдущие маркеры клиник
+    // Avvalgi metkalarni o'chirish
     clinicsPlacemarksRef.current.forEach((placemark) => {
-      mapRef.current.geoObjects.remove(placemark);
+        mapRef.current.geoObjects.remove(placemark);
     });
     clinicsPlacemarksRef.current = [];
 
-    clinics.forEach((clinic) => {
-      // Создаём макет иконки из SVG
-      const clinicIconLayout = ymaps.templateLayoutFactory.createClass(`
-        <svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
-        </svg>
-      `);
+    // Ko'p metkalarni bir vaqtda qo'shish
+    const placemarks = clinics.map((clinic) => {
+        const clinicIconLayout = ymaps.templateLayoutFactory.createClass(`
+            <svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
+            </svg>
+        `);
 
-      const placemark = new ymaps.Placemark(
-        clinic.coords,
-        {
-          hintContent: clinic.name,
-          balloonContent: `<b>${clinic.name}</b><br>${clinic.address}<br>${clinic.graphic}`,
-        },
-        {
-          iconLayout: clinicIconLayout,
-          iconShape: {
-            type: "Circle",
-            coordinates: [0, 0],
-            radius: 40,
-          },
-          iconOffset: [-20, -57],
-        }
-      );
+        const placemark = new ymaps.Placemark(
+            clinic.coords,
+            {
+                hintContent: clinic.name,
+                balloonContent: `<b>${clinic.name}</b><br>${clinic.address}<br>${clinic.graphic}`,
+            },
+            {
+                iconLayout: clinicIconLayout,
+                iconShape: {
+                    type: "Circle",
+                    coordinates: [0, 0],
+                    radius: 40,
+                },
+                iconOffset: [-20, -57],
+            }
+        );
 
-      placemark.events.add("click", () => {
-        buildRoute(userLocation, clinic.coords, clinic.id);
-      });
+        // Har bir metkani bitta klik eventiga qo'shamiz
+        placemark.events.add("click", () => {
+            buildRoute(userLocation, clinic.coords, clinic.id);
+        });
 
-      mapRef.current.geoObjects.add(placemark);
-      clinicsPlacemarksRef.current.push(placemark);
+        return placemark;
     });
-  };
+
+    // Bir vaqtning o'zida barcha metkalarni qo'shamiz
+    placemarks.forEach((placemark) => {
+        mapRef.current.geoObjects.add(placemark);
+    });
+
+    clinicsPlacemarksRef.current = placemarks;
+};
+
 
   const buildRoute = (start, end, clinicId) => {
     const ymaps = ymapsRef.current;

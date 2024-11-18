@@ -19,7 +19,7 @@ export default function HomePage({ params }) {
       <Steps />
       <div className="w-full max-w-[1440px] px-2 mx-auto flex flex-col gap-4">
         <Application />
-        <Social />
+        {/* <Social /> */}
       </div>
     </div>
   );

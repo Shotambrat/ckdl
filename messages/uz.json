@@ -6,7 +6,8 @@
       "services": "Xizmatlar",
       "doctors": "Shifokorlar",
       "addresses": "Manzillar",
-      "about": "Biz haqimizda"
+      "about": "Biz haqimizda",
+      "analyzemobile": "Analizlar"
     },
     "results": "Natijalar",
     "Login": {
@@ -91,7 +92,8 @@
     "feedback": "Takliflar va shikoyatlar",
     "rights": "Interlab Barcha huquqlar himoyalangan",
     "partners": "Partnyorlar",
-    "vacancy": "Vakansiyalar"
+    "vacancy": "Vakansiyalar",
+    "analyze": "Analizlar"
   },
   "Analyze": {
     "title": "Tahlillar",

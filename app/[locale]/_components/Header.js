@@ -9,7 +9,7 @@ function Header({ locale }) {
   const navOptions = [
     { id: 2, name: t('analyze'), url: '/' },
     { id: 5, name: t('addresses'), url: '/addresses' },
-    { id: 3, name: t('services'), url: '/services' },
+    { id: 3, name: t('analyzemobile'), url: '/analyze' },
     // { id: 4, name: t('doctors'), url: '/doctors' },
     { id: 6, name: t('about'), url: '/ckdl' }
   ];

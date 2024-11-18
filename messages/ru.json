@@ -6,7 +6,8 @@
       "services": "Услуги",
       "doctors": "Врачи",
       "addresses": "Пункты",
-      "about": "О проекте"
+      "about": "О проекте",
+      "analyzemobile": "Анализы"
     },
     "results": "Результаты",
     "Login": {
@@ -91,7 +92,8 @@
     "feedback": "Предложения и жалобы",
     "rights": "Interlab Все права защищены",
     "partners": "Партнеры",
-    "vacancy": "Вакансии"
+    "vacancy": "Вакансии",
+    "analyze": "Анализы"
   },
   "Analyze": {
     "title": "Анализы",
