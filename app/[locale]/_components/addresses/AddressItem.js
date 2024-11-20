@@ -2,12 +2,17 @@ import callIcon from "@/public/svg/call-icon-red.svg";
 import Image from "next/image";
 import arrowRight from "@/public/svg/arrow-right-gray.svg"
 
+
+
+
 export default function AddressItem({
   title,
   address,
   graphic,
   tel,
   url,
+  onClick
+
 }) {
   return (
     <div
@@ -41,7 +46,7 @@ export default function AddressItem({
               {tel}
             </a>
           </div>
-          <a href={url} className="flex gap-3 items-center text-neutral-400">
+          <button onClick={onClick} className="flex gap-3 items-center text-neutral-400">
             Подробнее
             <Image
               src={arrowRight}
@@ -50,7 +55,7 @@ export default function AddressItem({
               alt="Arrow right icon gray"
               className="h-3 w-3"
             />
-          </a>
+          </button>
         </div>
       </div>
     </div>

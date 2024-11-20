@@ -731,7 +731,7 @@ export default function Map() {
         // Add all clinics' placemarks initially
         clinicsLocations.forEach((clinic) => {
             const clinicIconLayout = ymaps.templateLayoutFactory.createClass(`
-                <svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="35" height="35" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
                 </svg>
             `);
@@ -922,13 +922,32 @@ export default function Map() {
     return deg * (Math.PI / 180);
   };
 
-  const sortedClinics = activeClinic
-    ? [
-        clinics.find((clinic) => clinic.id === activeClinic),
-        ...clinics.filter((clinic) => clinic.id !== activeClinic),
-      ]
-    : clinics;
+  
 
+
+    const handleLocationClick = (id, coords) => {
+      // Set the state to show the map view
+      setIsMap(true);
+    
+      // Ensure the map centers on the clicked location after the view changes
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.setCenter(coords, 14, { duration: 300 });
+    
+          // Open the balloon for the clicked location
+          mapRef.current.geoObjects.each((geoObject) => {
+            const placemarkCoords = geoObject.geometry.getCoordinates();
+            if (placemarkCoords.toString() === coords.toString()) {
+              geoObject.balloon.open();
+            }
+          });
+        }
+      }, 100); // Small delay to ensure the map is rendered before changing the center
+    
+      // Update the active clinic
+      setActiveClinic(id);
+    };
+    
   return (
     <div className="w-full relative mt-24">
       <div className="w-full max-w-[1440px] relative mx-auto flex flex-col gap-8">
@@ -936,7 +955,7 @@ export default function Map() {
         {/* Остальной JSX код */}
         <div className="relative w-full flex max-lg:flex-col-reverse gap-5">
           <div className="flex flex-col gap-4 max-lg:hidden overflow-y-scroll h-[725px] w-1/3">
-            {sortedClinics.length === 0
+            {clinicsLocations.length === 0
               ? clinicsLocations.map((clinic) => (
                   <AddressItem
                     key={clinic.id}
@@ -946,9 +965,12 @@ export default function Map() {
                     tel={clinic.tel}
                     url="/"
                     className={clinic.id === activeClinic ? "bg-red-100" : ""}
+                    onClick={() =>
+                      handleLocationClick(clinic.id, clinic.coords)
+                    }
                   />
                 ))
-              : sortedClinics.map((clinic) => (
+              : clinicsLocations.map((clinic) => (
                   <AddressItem
                     key={clinic.id}
                     title={clinic.name}
@@ -957,6 +979,9 @@ export default function Map() {
                     tel={clinic.tel}
                     url="/"
                     className={clinic.id === activeClinic ? "bg-red-100" : ""}
+                    onClick={() =>
+                      handleLocationClick(clinic.id, clinic.coords)
+                    }
                   />
                 ))}
           </div>
@@ -979,7 +1004,7 @@ export default function Map() {
           </div>
           {!isMap && (
             <div className="w-full grid grid-cols-1 mdx:grid-cols-2 gap-4">
-              {sortedClinics.length === 0
+              {clinicsLocations.length === 0
                 ? clinicsLocations
                     .slice(0, 6)
                     .map((clinic) => (
@@ -988,6 +1013,9 @@ export default function Map() {
                         title={clinic.name}
                         address={clinic.address}
                         graphic={[clinic.graphic]}
+                        onClick={() =>
+                          handleLocationClick(clinic.id, clinic.coords)
+                        }
                         tel={clinic.tel}
                         url="/"
                         className={
@@ -995,7 +1023,7 @@ export default function Map() {
                         }
                       />
                     ))
-                : sortedClinics
+                : clinicsLocations
                     .slice(0, 6)
                     .map((clinic) => (
                       <AddressItem
@@ -1003,6 +1031,9 @@ export default function Map() {
                         title={clinic.name}
                         address={clinic.address}
                         graphic={[clinic.graphic]}
+                        onClick={() =>
+                          handleLocationClick(clinic.id, clinic.coords)
+                        }
                         tel={clinic.tel}
                         url="/"
                         className={

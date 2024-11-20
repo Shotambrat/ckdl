@@ -28,9 +28,9 @@ export default function PopularAnalyzeItem({ locale, title, price, slug }) {
           >
             Сдать из дома
           </button>
-          <button className="bg-[#FEE9E8] text-[#FB6A68] font-semibold rounded-full py-2 px-4 text-lg">
+          {/* <button className="bg-[#FEE9E8] text-[#FB6A68] font-semibold rounded-full py-2 px-4 text-lg">
             Подробнее
-          </button>
+          </button> */}
         </div>
       </Link>
     </>

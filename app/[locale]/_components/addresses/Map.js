@@ -660,6 +660,7 @@ export default function Map() {
   const [isSearchButtonVisible, setIsSearchButtonVisible] = useState(true);
   const [activeClinic, setActiveClinic] = useState(null);
   const mapRef = useRef(null);
+  const scrollToMap = useRef(null);
   const ymapsRef = useRef(null);
   const userPlacemarkRef = useRef(null);
   const routeRef = useRef(null);
@@ -719,7 +720,7 @@ export default function Map() {
       // Display all clinics on the map initially
       clinicsLocations.forEach((clinic) => {
         const clinicIconLayout = ymaps.templateLayoutFactory.createClass(`
-          <svg width="44" height="57" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="40" height="40" viewBox="0 0 44 57" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1226 56.0115C23.2785 56.0115 43.9327 34.1321 43.9327 22.1897C43.9327 10.2473 34.1679 0.56604 22.1226 0.56604C10.0772 0.56604 0.3125 10.2473 0.3125 22.1897C0.3125 34.1321 20.9667 56.0115 22.1226 56.0115ZM22.1226 33.0052C28.2296 33.0052 33.1804 28.0967 33.1804 22.0418C33.1804 15.987 28.2296 11.0786 22.1226 11.0786C16.0156 11.0786 11.0649 15.987 11.0649 22.0418C11.0649 28.0967 16.0156 33.0052 22.1226 33.0052Z" fill="#FB6A68"/>
           </svg>
         `);
@@ -847,6 +848,31 @@ export default function Map() {
 
   const deg2rad = (deg) => deg * (Math.PI / 180);
 
+  const handleLocationClick = (id, coords) => {
+    if (scrollToMap.current) {
+      scrollToMap.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+
+    setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.setCenter(coords, 14, { duration: 300 });
+  
+        // Open the balloon for the clicked location
+        mapRef.current.geoObjects.each((geoObject) => {
+          const placemarkCoords = geoObject.geometry.getCoordinates();
+          if (placemarkCoords.toString() === coords.toString()) {
+            geoObject.balloon.open();
+          }
+        });
+      }
+    }, 100); // Small delay to ensure the map is rendered before changing the center
+  
+    // Update the active clinic
+    setActiveClinic(id);
+  };
+
+
 
   return (
     <div className="w-full relative">
@@ -860,8 +886,8 @@ export default function Map() {
           </button>
         )}
       </div>
-      <div id="map" className="w-full z-0 h-[500px]"></div>
-      <Filter sortedClinics={clinics} activeClinic={activeClinic} clinicsLocations={clinicsLocations} />
+      <div id="map" ref={scrollToMap} className="w-full z-0 h-[500px]"></div>
+      <Filter sortedClinics={clinics} activeClinic={activeClinic} onLocationClick={handleLocationClick} clinicsLocations={clinicsLocations} />
     </div>
   );
 }
