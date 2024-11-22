@@ -1,9 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet-routing-machine";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import Filter from "@/app/[locale]/_components/addresses/Filter"
 
 const clinicsLocations = [
@@ -653,6 +649,8 @@ const clinicsLocations = [
 ];
 
 
+
+
 export default function Map() {
   const YANDEX_API_KEY = process.env.NEXT_PUBLIC_YANDEX_API_KEY;
   const [clinics, setClinics] = useState([]);
@@ -845,6 +843,9 @@ export default function Map() {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
+
+
+
 
   const deg2rad = (deg) => deg * (Math.PI / 180);
 
