@@ -713,7 +713,7 @@ export default function Map() {
     if (!mapRef.current) {
         mapRef.current = new ymaps.Map("map", {
             center: center,
-            zoom: 10,
+            zoom: 17,
             controls: ["zoomControl"],
         });
 

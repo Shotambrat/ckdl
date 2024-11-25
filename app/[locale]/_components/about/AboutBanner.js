@@ -10,7 +10,7 @@ export default function AboutBanner() {
         <div className="absolute max-slg:relative slg:top-1/3 lg:left-[7%] flex flex-col px-4 2xl:left-[5%]">
           <h1 className="text-5xl max-mdx:text-3xl text-rose-400 font-bold w-full max-w-[560px]">{t('About.title')} <span className="text-black">{t('About.subtitle')}</span></h1>
           <p className="w-full max-w-[400px] leading-5">
-          {t('About.description')}
+          {t('About.description')}  
           </p>
           <a href="tel:+998971504747" className="text-white bg-[#FB6A68] font-semibold self-start rounded-full px-8 py-3">
             Связаться с нами
