@@ -12,17 +12,9 @@ export default function FilterAnalyzeItems({
       <div className="flex justify-between items-start">
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-bold">{title}</h2>
-          {shortDescription ? (
-            <p>{shortDescription}</p>
-          ) : (
-            <p>Описание отсутствует</p>
-          )}
+          
         </div>
-        {price != null && (
-          <p className="whitespace-nowrap text-red-500 font-bold text-lg">
-            {price} сум
-          </p>
-        )}
+        
       </div>
       <hr />
     </Link>

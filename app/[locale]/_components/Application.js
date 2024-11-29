@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import lineForm from "@/public/svg/application/illustration.svg";
 import Arrow_down from "@/public/svg/arrow-down.svg";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Form, Input, Button, DatePicker, message } from "antd";
 import { useState } from "react";
 import axios from "axios";
@@ -15,6 +15,7 @@ const Application = () => {
   const [phone, setPhone] = useState("");
   const [isValidPhone, setIsValidPhone] = useState(false); // State for phone validity
   const [loading, setLoading] = useState(false); // State for button loading
+  const locale = useLocale()
 
   const handlePhoneChange = (value, country, e, formattedValue) => {
     setPhone(value);
@@ -131,7 +132,7 @@ const Application = () => {
               rules={[{ required: true, message: "Выберите дату рождения" }]}
             >
               <DatePicker
-                placeholder="Выберите дату"
+                placeholder={ locale === 'ru' ? 'Выберите дату' : 'Sanani Tanglang'}
                 format="DD.MM.YYYY"
                 className="rounded-xl input py-2 text-xl w-full border-none shadow-sm"
               />

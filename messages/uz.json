@@ -2,7 +2,7 @@
   "Header": {
     "Navigation": {
       "ckdl": "CKDL",
-      "analyze": "Tahlillar",
+      "analyze": "Bosh Sahifa",
       "services": "Xizmatlar",
       "doctors": "Shifokorlar",
       "addresses": "Manzillar",
@@ -123,24 +123,24 @@
     "edu": "Ta'lim"
   },
   "About": {
-    "title": "Intermed",
+    "title": "INTERMED",
     "subtitle": "- Toshkentdagi zamonaviy med markaz",
-    "description": "Intermed klinikasi – bu tibbiyotdagi an'ana va innovatsiyalar uyg'unligi. Biz ko'p yillik tajriba va so'nggi tibbiy yutuqlar asosida xizmatlar taklif qilamiz.",
+    "description": "INTERMED klinikasi – bu tibbiyotdagi an'ana va innovatsiyalar uyg'unligi. Biz ko'p yillik tajriba va so'nggi tibbiy yutuqlar asosida xizmatlar taklif qilamiz.",
     "more-info": {
       "title": "Klinika",
-      "subtitle": "Intermed",
-      "description": "Intermed klinikasi – bu zamonaviy tibbiyot markazi bo'lib, kasalliklarni diagnostika qilish, davolash va oldini olish uchun keng ko'lamli xizmatlarni taqdim etadi.\n\nBiz xizmatlarimiz sifatini yuqori darajada ta'minlashga intilamiz va bemorlarimizning sog'lig'iga g'amxo'rlik qilamiz, ilg'or tibbiy texnologiyalar va individual yondashuvni taklif etamiz."
+      "subtitle": "INTERMED",
+      "description": "INTERMED klinikasi – bu zamonaviy tibbiyot markazi bo'lib, kasalliklarni diagnostika qilish, davolash va oldini olish uchun keng ko'lamli xizmatlarni taqdim etadi.\n\nBiz xizmatlarimiz sifatini yuqori darajada ta'minlashga intilamiz va bemorlarimizning sog'lig'iga g'amxo'rlik qilamiz, ilg'or tibbiy texnologiyalar va individual yondashuvni taklif etamiz."
     },
     "services": {
       "title": "Bizning xizmatlarimiz",
       "title1": "LABORATORIYA TAHLILLARI",
-      "description1": "Intermed 1000 dan ortiq laboratoriya tahlillarini, jumladan biokimyoviy, gematologik, immunologik va genetik tadqiqotlarni taklif etadi. Bizning laboratoriyalarimiz eng zamonaviy avtomatik analizatorlar bilan jihozlangan, bu natijalarning aniqligi va ishonchliligini ta'minlaydi.",
+      "description1": "INTERMED 800 dan ortiq laboratoriya tahlillarini, jumladan biokimyoviy, gematologik, immunologik va genetik tadqiqotlarni taklif etadi. Bizning laboratoriyalarimiz eng zamonaviy avtomatik analizatorlar bilan jihozlangan, bu natijalarning aniqligi va ishonchliligini ta'minlaydi.",
       "title2": "DIAGNOSTIKA XIZMATLARI",
       "description2": "Biz yuqori texnologiyali diagnostika xizmatlarini taklif qilamiz, jumladan ultratovush tekshiruvi (UZT), raqamli rentgenografiya, endoskopiya, EKG va dopplerografiya. Zamonaviy uskunalar kasalliklarni erta bosqichda aniqlash va davolash jarayonini samarali nazorat qilish imkonini beradi.",
       "title3": "MUTAXASSIS MASLAHATLARI",
       "description3": "Bizning klinikamizda yuqori malakali kardiologlar, nevropatologlar, endokrinologlar, gastroenterologlar, pulmonologlar va boshqa mutaxassislar ishlaydi. Biz aniq tashxis qo'yish va samarali davolash uchun kompleks maslahatlar va tekshiruvlarni taklif etamiz.",
       "title4": "FIZIOTERAPIYA",
-      "description4": "Intermed ilg'or fizioterapevtik uskunalar bilan jihozlangan. Biz to'lqinli terapiya, elektroforez, infraqizil lazer terapiyasi va miostimulyatsiya kabi keng turdagi protseduralarni taklif etamiz. Ushbu usullar turli kasalliklarni davolash va reabilitatsiya qilishda yordam beradi, bemorlarning umumiy sog'lig'ini yaxshilaydi."
+      "description4": "INTERMED ilg'or fizioterapevtik uskunalar bilan jihozlangan. Biz to'lqinli terapiya, elektroforez, infraqizil lazer terapiyasi va miostimulyatsiya kabi keng turdagi protseduralarni taklif etamiz. Ushbu usullar turli kasalliklarni davolash va reabilitatsiya qilishda yordam beradi, bemorlarning umumiy sog'lig'ini yaxshilaydi."
     },
     "achievements": {
       "title": "Yutuqlar",
@@ -149,7 +149,7 @@
       "title2": "Funksional diagnostika",
       "description2": "Ko'plab diagnostika xizmatlari, batafsil tekshiruv o'tkazish imkonini beradi",
       "title3": "Tibbiyot uskunalari",
-      "description3": "Intermed klinikasida xalqaro standartlarga javob beradigan eng yaxshi uskunalar ishlatiladi",
+      "description3": "INTERMED klinikasida xalqaro standartlarga javob beradigan eng yaxshi uskunalar ishlatiladi",
       "title4": "Tajriba va mutaxassislar",
       "description4": "Bizning shifokorlarimiz ko'p yillik tajribaga ega va o'z sohalarida malakalarini doimiy ravishda oshirib boradilar"
     },
@@ -168,13 +168,13 @@
     "warning": "Tahlil natijalari ro'yxatdan o'tishda ko'rsatilgan telefon raqamiga yuboriladi. Natijalarni uchinchi shaxslar tomonidan olishni oldini olish uchun shaxsiy telefon raqamingizni ko'rsatishingizni tavsiya qilamiz.",
     "get": "Olish",
     "instruction": "Ko'rsatma",
-    "how-get-online": "Intermed tahlil natijalarini masofadan qanday olish mumkin?",
+    "how-get-online": "INTERMED tahlil natijalarini masofadan qanday olish mumkin?",
     "error": "Xatolik yuz berdi",
     "failed_to_get_result": "Tahlil natijalarini olishni iloji bo'lmadi"
   },
   "Blog": {
-    "prom-title": "Intermed klinikasining foydali maslahatlari va qulay takliflari",
-    "sub-prom-title": "Intermed",
+    "prom-title": "INTERMED klinikasining foydali maslahatlari va qulay takliflari",
+    "sub-prom-title": "INTERMED",
     "promotions": {
       "other": "Boshqa aksiyalar"
     },
@@ -182,8 +182,8 @@
     "other": "Boshqa yangiliklar"
   },
   "Licencies": {
-    "title": "Intermed klinikasining litsenziyalari",
-    "subtitle": "Intermed",
+    "title": "INTERMED klinikasining litsenziyalari",
+    "subtitle": "INTERMED",
     "description": "Sifat kafolati: Bizning litsenziya va sertifikatlarimiz",
     "about": {
       "title": "Litsenziyalar haqida",
@@ -208,7 +208,7 @@
       "title1": "Korporativ xizmat ko'rsatish",
       "description1": "Biz kompaniyalar uchun keng qamrovli tibbiy xizmatlarni taqdim etamiz, jumladan profilaktik ko'riklar, diagnostika, emlash va davolash. \n\nBizning korporativ salomatlik dasturlarimiz xodimlaringizning farovonligini yaxshilash va ularning mahsuldorligini oshirish uchun ishlab chiqilgan.",
       "title2": "Klinikalar bilan hamkorlik",
-      "description2": "Intermed klinikasi bemorlarga sifatli va o'z vaqtida xizmat ko'rsatishni ta'minlash uchun yetakchi tibbiy muassasalar bilan hamkorlik qiladi. \n\nBiz hamkorlik uchun qulay shart-sharoitlarni taklif etamiz, jumladan tajriba almashish, qo'shma tibbiy loyihalar va bemorlarni o'zaro yuborish."
+      "description2": "INTERMED klinikasi bemorlarga sifatli va o'z vaqtida xizmat ko'rsatishni ta'minlash uchun yetakchi tibbiy muassasalar bilan hamkorlik qiladi. \n\nBiz hamkorlik uchun qulay shart-sharoitlarni taklif etamiz, jumladan tajriba almashish, qo'shma tibbiy loyihalar va bemorlarni o'zaro yuborish."
     },
     "benefits": {
       "title": "Afzalliklar",
@@ -377,9 +377,9 @@
   },
   "CKDL": {
     "about": {
-      "title": "Intermed Innovation Markaziy Klinik-Diagnostika Laboratoriyasi",
+      "title": "INTERMED  INNOVATION Markaziy Klinik-Diagnostika Laboratoriyasi",
       "subtitle": "aniqlik va g'amxo'rlik sizning yoningizda",
-      "description": "Intermed Innovation Markaziy Klinik-Diagnostika Laboratoriyasi (CKDL) Toshkentda yuqori sifatli laborator va diagnostika xizmatlarini taqdim etadi. Biz shaharning har bir fuqarosi uchun aniq va ishonchli tibbiy diagnostikadan foydalanishni ta'minlashga intilamiz, keng ko'lamli tahlil va diagnostika protseduralarini taklif etamiz."
+      "description": "INTERMED  INNOVATION Markaziy Klinik-Diagnostika Laboratoriyasi (CKDL) Toshkentda yuqori sifatli laborator va diagnostika xizmatlarini taqdim etadi. Biz shaharning har bir fuqarosi uchun aniq va ishonchli tibbiy diagnostikadan foydalanishni ta'minlashga intilamiz, keng ko'lamli tahlil va diagnostika protseduralarini taklif etamiz."
     },
     "whyWe": {
       "heading": "Minglab odamlar bizni tanlashadi",

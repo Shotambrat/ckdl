@@ -1,96 +1,144 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import FilterCategory from "@/app/[locale]/_components/analyze/FilterCategory";
-import FilterAnalyzeItems from "./FilterAnalyzeItems";
-import { client } from "@/sanity/lib/client";
-import { Select, Spin } from 'antd'; // Spin для индикатора загрузки
-import { DownOutlined } from '@ant-design/icons';
+import { useState, useEffect } from 'react'
+import FilterCategory from '@/app/[locale]/_components/analyze/FilterCategory'
+import FilterAnalyzeItems from './FilterAnalyzeItems'
+import { Select, Spin } from 'antd' // Spin для индикатора загрузки
+import { DownOutlined } from '@ant-design/icons'
+import axios from 'axios'
+import SearchComp from '../SearchComp'
 
 export default function Filter({ params }) {
-  const { locale } = params;
-  const [categories, setCategories] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [tests, setTests] = useState([]);
-  const [loadingCategories, setLoadingCategories] = useState(true); // Состояние загрузки категорий
-  const [loadingTests, setLoadingTests] = useState(false); // Состояние загрузки тестов
+  const { locale } = params
+  const [categories, setCategories] = useState([])
+  const [activeCategory, setActiveCategory] = useState(null)
+  const [tests, setTests] = useState([])
+  const [filteredTests, setFilteredTests] = useState([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
+  const [loadingTests, setLoadingTests] = useState(false)
+  const [query, setQuery] = useState('') // Строка поиска
 
-  // Загружаем категории
   useEffect(() => {
-    const fetchCategories = async () => {
-      setLoadingCategories(true); // Включаем состояние загрузки категорий
+    const fetchDataOfApi = async () => {
       try {
-        const categoriesData = await client.fetch(`
-          *[_type == "testCategory"]{
-            _id,
-            name,
-            slug
-          }
-        `);
-        setCategories(categoriesData);
-        if (categoriesData.length > 0) {
-          setActiveCategory(categoriesData[0].slug.current); // Устанавливаем первую категорию как активную
+        setLoadingTests(true)
+        const response = await axios.post('/api/proxy', {
+          userName: 'INTERMED',
+          password: 'IN12TER34MED56',
+          language: 2
+        })
+
+        const testsData = response.data.data // Dastlabki ma'lumot
+        setTests(testsData)
+
+        // Filtrlaymiz: "Терапевт", "Невропатолог", "Процедура", "ЛОР" kategoriyalarni o'chirib tashlaymiz
+        const excludedCategories = [
+          'Терапевт',
+          'Невропатолог',
+          'Процедура',
+          'ЛОР'
+        ]
+        const filteredCategories = testsData.filter(
+          test => !excludedCategories.includes(test.testSectionName)
+        )
+
+        // Unikal kategoriyalarni olish
+        const uniqueCategories = [
+          ...new Set(filteredCategories.map(test => test.testSectionName))
+        ]
+        setCategories(uniqueCategories)
+
+        // Birinchi kategoriyani o'rnatamiz
+        if (uniqueCategories.length > 0) {
+          setActiveCategory(uniqueCategories[0])
+          setFilteredTests(
+            filteredCategories.filter(
+              test => test.testSectionName === uniqueCategories[0]
+            )
+          )
         }
-      } catch (error) {
-        console.error("Ошибка при загрузке категорий:", error);
-      } finally {
-        setLoadingCategories(false); // Отключаем состояние загрузки категорий
-      }
-    };
-    fetchCategories();
-  }, []);
 
-  // Загружаем тесты при изменении активной категории
-  useEffect(() => {
-    const fetchTests = async () => {
-      if (!activeCategory) return;
-      setLoadingTests(true); // Включаем состояние загрузки тестов
-      try {
-        const testsData = await client.fetch(
-          `*[_type == "test" && category->slug.current == $categorySlug]{
-            _id,
-            name,
-            shortDescription,
-            price,
-            slug
-          }`,
-          { categorySlug: activeCategory }
-        );
-        setTests(testsData);
+        setLoadingCategories(false)
+        setLoadingTests(false)
       } catch (error) {
-        console.error("Ошибка при загрузке анализов:", error);
-      } finally {
-        setLoadingTests(false); // Отключаем состояние загрузки тестов
+        console.error('Ошибка при получении данных анализов:', error)
+        setLoadingCategories(false)
+        setLoadingTests(false)
       }
-    };
-    fetchTests();
-  }, [activeCategory]);
+    }
+
+    fetchDataOfApi()
+  }, [])
 
   // Функция переключения категории
-  const handleFilter = (categorySlug) => {
-    setActiveCategory(categorySlug);
-  };
+  const handleFilter = category => {
+    setActiveCategory(category)
+    setFilteredTests(tests.filter(test => test.testSectionName === category))
+  }
+
+  // Обработка открытия/закрытия выпадающего меню
+  const handleDropdownVisibleChange = open => {
+    setIsSelectOpen(open)
+    if (open) {
+      document.body.style.overflow = 'hidden' // Блокируем прокрутку страницы
+    } else {
+      document.body.style.overflow = '' // Возвращаем прокрутку страницы
+    }
+  }
 
   // Для мобильной версии формируем массив категорий для селекта
   const mobileCategoryOptions = categories.map(category => ({
-      value: category.slug.current,
-      label: category.name[locale] || category.name.ru
-  }));
+    value: category,
+    label: category
+  }))
+
+  const handleSearchChange = e => {
+    const value = e.target.value
+    setQuery(value)
+
+    if (activeCategory) {
+      const filteredByCategory = tests.filter(
+        test => test.testSectionName === activeCategory
+      )
+      setFilteredTests(
+        filteredByCategory.filter(test =>
+          test.testName.toLowerCase().includes(value.toLowerCase())
+        )
+      )
+    } else {
+      setFilteredTests(
+        tests.filter(test =>
+          test.testName.toLowerCase().includes(value.toLowerCase())
+        )
+      )
+    }
+  }
 
   return (
-    <div className="w-full h-auto bg-white max-mdl:px-4">
-      <div className="w-full max-w-[1440px] mx-auto h-auto flex max-mdl:flex-col gap-10">
-        
+    <div className='w-full h-auto bg-white max-mdl:px-4'>
+      <div className=' mdx:px-[20px] lg:px-[40px] mb-[15px] mdx:mb-[30px] mt-[30px] mdx:mt-[60px] lg:mt-[80px]'>
+        <SearchComp
+          placeholder={
+            locale === 'ru'
+              ? 'Введите название анализа'
+              : 'Tahlil nomini kiriting'
+          }
+          onChange={handleSearchChange}
+          query={query}
+        />
+      </div>
+
+      <div className='w-full mdx:px-[20px] lg:mdx:px-0 max-w-[1440px] mx-auto h-auto flex max-mdl:flex-col gap-10'>
         {/* Desktop version of categories */}
-        <div className="w-full mdl:max-w-1/3 mdl:w-1/3 flex flex-col gap-3 h-auto max-mdl:hidden">
+        <div className='w-full mdl:max-w-1/3 mdl:w-1/3 flex flex-col gap-3 h-auto max-mdl:hidden'>
           {loadingCategories ? (
-            <Spin size="large" /> // Индикатор загрузки категорий
+            <Spin size='large' /> // Индикатор загрузки
           ) : (
-            categories.map((category) => (
+            categories.map(category => (
               <FilterCategory
-                key={category._id}
-                title={category.name[locale]}
-                catname={category.slug.current}
+                key={category}
+                title={category}
+                catname={category}
                 handleFilter={handleFilter}
                 active={activeCategory}
               />
@@ -99,15 +147,16 @@ export default function Filter({ params }) {
         </div>
 
         {/* Mobile version of category filter */}
-        <div className="mdl:hidden w-full mb-4">
+        <div className='mdl:hidden w-full mb-4'>
           {loadingCategories ? (
-            <Spin size="large" /> // Индикатор загрузки для мобильной версии
+            <Spin size='large' /> // Индикатор загрузки для мобильной версии
           ) : (
             <Select
               defaultValue={activeCategory}
               className='custom-select'
               options={mobileCategoryOptions}
               onChange={value => handleFilter(value)}
+              onDropdownVisibleChange={handleDropdownVisibleChange} // Отслеживаем изменение видимости выпадающего списка
               suffixIcon={<DownOutlined style={{ color: 'white' }} />} // Белая стрелка
               style={{
                 backgroundColor: '#FB6A68', // Красный фон
@@ -117,34 +166,49 @@ export default function Filter({ params }) {
                 fontSize: '18px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'center'
               }}
               dropdownStyle={{
                 backgroundColor: '#fff', // Белый фон для выпадающего списка
-                borderRadius: '10px', // Закругление краев выпадающего списка
+                borderRadius: '10px' // Закругление краев выпадающего списка
               }}
-              popupClassName="custom-select-dropdown" // Класс для стилизации выпадающего списка
+              popupClassName='custom-select-dropdown' // Класс для стилизации выпадающего списка
             />
           )}
         </div>
 
         {/* List of filtered tests */}
-        <div className="w-full mdl:max-w-2/3 mdl:w-2/3 flex flex-col gap-3 h-auto">
+        <div className='w-full mdl:max-w-2/3 mdl:w-2/3 flex flex-col gap-3 h-auto'>
           {loadingTests ? (
-            <Spin size="large" /> // Индикатор загрузки тестов
-          ) : (
-            tests.map((test) => (
+            <Spin size='large' /> // Индикатор загрузки тестов
+          ) : filteredTests.length > 0 ? (
+            filteredTests.map(test => (
               <FilterAnalyzeItems
-                key={test._id}
-                title={test.name[locale]}
-                shortDescription={test.shortDescription[locale]}
-                price={test.price}
-                slug={test.slug?.current}
+                key={test.id}
+                title={test.testName}
+               
+                slug={test.testId}
+                locale={locale}
               />
             ))
+          ) : (
+            <p className='text-center text-gray-500'>
+              {locale === 'uz' ? (
+                <>
+                  So‘rov bo‘yicha{' '}
+                  <strong className='text-[#FB6A68]'>{query}</strong> hech narsa
+                  topilmadi.
+                </>
+              ) : locale === 'ru' ? (
+                <>
+                  По запросу <strong className='text-[#FB6A68] break-words'>{query}</strong>{' '}
+                  ничего не найдено.
+                </>
+              ) : null}
+            </p>
           )}
         </div>
       </div>
     </div>
-  );
+  )
 }

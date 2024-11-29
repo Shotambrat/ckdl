@@ -1,9 +1,10 @@
 import aboutBanner from "@/public/images/interlab-logo.jpg";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function AboutBanner() {
   const t = useTranslations()
+  const locale = useLocale()
   return (
     <>
       <div className="w-full h-screen-70 mdx:h-screen-90 relative max-slg:gap-5 flex flex-col pt-10">
@@ -13,7 +14,9 @@ export default function AboutBanner() {
           {t('About.description')}  
           </p>
           <a href="tel:+998971504747" className="text-white bg-[#FB6A68] font-semibold self-start rounded-full px-8 py-3">
-            Связаться с нами
+            
+          {locale === 'ru' ? 'Связаться с нами' : 'Biz bilan bog`lanish'}
+
           </a>
         </div>
         <div className="absolute max-slg:relative h-[500px] slg:h-full w-full max-slg:px-4 slg:w-1/2 top-0 right-0">

@@ -33,7 +33,7 @@ export default async function AnalyzeDetailPage({ params }) {
         <PopularAnalyze params={{ locale }} />
       </div>
       <div className="w-full max-w-[1440px] mx-auto px-3">
-        <Instuction />
+        <Instuction locale={locale} />
       </div>
     </div>
   );

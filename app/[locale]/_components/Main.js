@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import Banner from "./Main/Banner";
 import Advantages from "./Main/Advantages";
@@ -6,20 +7,32 @@ import PopularAnalyze from "./PopularAnalyze";
 import Instuction from "./Instuction";
 import Application from "./Application";
 import Blog from "./Blog";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations  } from "next-intl";
+import { useRef } from 'react'
 
 export default function Main({ params }) {
   const t = useTranslations('');
+  const mapRef = useRef(null);
+  const locale = useLocale()
+
+  const onClicktoReff = () => {
+    if (mapRef.current) {
+      mapRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
     <main className="w-full flex flex-col gap-24 pb-24">
-      <Banner />
+      <Banner onClick={onClicktoReff} />
       <Advantages />
-      <Map />
+      <div ref={mapRef}>
+      <Map  />
+
+      </div>
       <div className="w-full max-w-[1440px] px-2 mx-auto">
         <PopularAnalyze params={params} />
       </div>
       <div className="w-full max-w-[1440px] px-2 mx-auto">
-        <Instuction />
+        <Instuction locale={locale} />
       </div>
       <div className="w-full max-w-[1440px] px-2 mx-auto">
         <Application />

@@ -57,12 +57,14 @@ export default function PopularAnalyze({ params }) {
       </div>
       <div className="w-full grid grid-cols-1 mdx:grid-cols-2 lg:grid-cols-3 gap-4">
         <Link
-          href={`/analyze`}
+          href={`https://interlab.uz/ru/check-up`}
           className="w-full flex flex-col justify-between bg-[#FFEFEF] p-4 rounded-3xl"
         >
           <div>
             <h3 className="font-bold text-2xl text-[#FB6A68]">
-              Комплексные чек-апы — <br /> это выгодно!
+            {locale === 'ru' ? <>Комплексные чек-апы — <br /> это выгодно!</> : <>Kompleks chek-aplar — <br /> bu foydali!</>}
+
+             
             </h3>
             <p className="text-[#DC7777] w-full max-w-[360px]">
               Сдавайте несколько анализов одновременно для комплексной проверки
@@ -72,7 +74,7 @@ export default function PopularAnalyze({ params }) {
 
           <div className="w-full flex gap-2">
             <button className="text-lg text-white font-semibold rounded-full py-2 px-12 bg-[#FB6A68]">
-              Перейти
+              {locale === 'ru' ? "Перейти" : "Batafsil"}
             </button>
           </div>
         </Link>

@@ -1,6 +1,7 @@
 import callIcon from "@/public/svg/call-icon-red.svg";
 import Image from "next/image";
 import arrowRight from "@/public/svg/arrow-right-gray.svg"
+import { useLocale } from 'next-intl'
 
 
 
@@ -12,8 +13,12 @@ export default function AddressItem({
   tel,
   url,
   onClick
+  
+}) 
 
-}) {
+{
+  const locale = useLocale()
+
   return (
     <div
       className="p-4 border rounded-2xl shadow-lg flex flex-col gap-4 max-xl:gap-0 justify-between flex-shrink-0 flex-grow-0 w-full max-w-[400px] mx-auto"
@@ -47,7 +52,8 @@ export default function AddressItem({
             </a>
           </div>
           <button onClick={onClick} className="flex gap-3 items-center text-neutral-400">
-            Подробнее
+          {locale === 'ru' ? 'Подробнее' : 'Batafsil'}
+
             <Image
               src={arrowRight}
               width={100}
