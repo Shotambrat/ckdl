@@ -1,12 +1,12 @@
-import AboutLicense from "../_components/about/AboutLicense";
-import Blog from "../_components/Blog";
-import AboutBanner from "../_components/ckdl/About";
-import Steps from "../_components/ckdl/Steps";
-import WhyWe from "../_components/ckdl/WhyWe";
+import AboutLicense from "../components/about/AboutLicense";
+import Blog from "../components/Blog";
+import Steps from "../components/ckdl/Steps";
 // import { useTranslations } from "next-intl";
-import Map from "../_components/MainMap";
-// import Application from "../_components/Application";
-// import Social from "../_components/ckdl/Social";
+import Map from "../components/MainMap";
+// import Application from "../components/Application";
+// import Social from "../components/ckdl/Social";
+import AboutBanner from '../components/about/AboutBanner';
+import WhyWe from '../components/ckdl/WhyWe';
 
 export default function HomePage({ params }) {
   return (

@@ -1,9 +1,9 @@
-import { client } from "@/sanity/lib/client";
-import ServiceBanner from "@/app/[locale]/_components/services/ServiceBanner";
-import ServiceList from "@/app/[locale]/_components/services/ServiceList";
+import { client } from '@/sanity/lib/client'
+import ServiceBanner from '@/app/[locale]/components/Services/ServiceBanner'
+import ServiceList from '@/app/[locale]/components/Services/ServiceList'
 
 export default async function ServicePage({ params }) {
-  const { locale } = params;
+  const { locale } = params
 
   // Fetch services with their category info
   const services = await client.fetch(
@@ -15,7 +15,7 @@ export default async function ServicePage({ params }) {
         name
       }
     }`
-  );
+  )
 
   // Fetch only categories that have at least one service
   const categories = await client.fetch(
@@ -23,12 +23,16 @@ export default async function ServicePage({ params }) {
       _id,
       name
     }`
-  );
+  )
 
   return (
     <div>
       <ServiceBanner locale={locale} />
-      <ServiceList services={services} categories={categories} locale={locale} />
+      <ServiceList
+        services={services}
+        categories={categories}
+        locale={locale}
+      />
     </div>
-  );
+  )
 }
