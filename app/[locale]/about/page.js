@@ -1,8 +1,11 @@
-import AboutService from '@/app/[locale]/components/about/AboutService'
-import AboutInfo from '@/app/[locale]/components/about/AboutInfo'
-import AboutBanner from '@/app/[locale]/components/about/AboutBanner'
-import AboutAchiev from '@/app/[locale]/components/about/AboutAchiev'
-import AboutLicense from '@/app/[locale]/components/about/AboutLicense'
+import AboutService from '../components/about/AboutService'
+import AboutInfo from '../components/about/AboutInfo'
+import AboutBanner from '../components/about/AboutBanner'
+import AboutAchiev from '../components/about/AboutAchiev'
+import AboutLicense from '../components/about/AboutLicense'
+
+
+
 import Blog from '@/app/[locale]/components/Blog'
 import { useTranslations } from 'next-intl'
 import MainServices from '../components/MainServices'
