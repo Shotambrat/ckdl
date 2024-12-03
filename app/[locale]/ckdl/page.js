@@ -1,11 +1,11 @@
-import AboutLicense from "../components/about/AboutLicense";
+import AboutLicense from "../components/About/AboutLicense";
 import Blog from "../components/Blog";
 import Steps from "../components/ckdl/Steps";
 // import { useTranslations } from "next-intl";
 import Map from "../components/MainMap";
 // import Application from "../components/Application";
 // import Social from "../components/ckdl/Social";
-import AboutBanner from '../components/about/AboutBanner';
+import AboutBanner from '../components/About/AboutBanner';
 import WhyWe from '../components/ckdl/WhyWe';
 
 export default function HomePage({ params }) {
