@@ -1,23 +1,25 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import { motion } from "framer-motion";
 import Slider from "react-slick";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-// import Link from "next/link";
+import Link from "next/link";
 // import LicenseModal from "../Modals/LicenseModal";
+import { Image } from 'antd';
 
-const AboutLicense = ({ locale }) => {
+const AboutLicense = () => {
   const t = useTranslations();
   const [licenses, setLicenses] = useState(null);
   const [modal, setModal] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState(null);
   const [autoPlay, setAutoPlay] = useState(false);
-
+  const locale = useLocale();
+  
   useEffect(() => {
     const fetchLicenses = async () => {
       try {
@@ -78,29 +80,20 @@ const AboutLicense = ({ locale }) => {
 
       <Slider {...settings}>
         {licenses.map((license, index) => (
-          <div key={index} className="slide-item" onClick={() => openModal(license)}>
+          <div key={index} className="slide-item relative overflow-hidden lg:max-h-[250px]" onClick={() => openModal(license)}>
             {/* Проверяем, есть ли URL изображения */}
             {license.photo?.asset?.url ? (
               <Image
-                width={1000}
-                height={1000}
+                quality={100}
                 src={license.photo.asset.url} // Используем URL изображения
                 alt={`License ${index + 1}`}
-                className="w-full max-w-[100%] rounded-lg shadow-xl"
+                // className="w-full max-w-[100%] h-full object-cover rounded-lg shadow-xl"
                 onError={(e) => {
                   console.error("Error loading image:", e);
                   e.target.src = "/placeholder.jpg"; // Если ошибка загрузки изображения
                 }}
               />
-            ) : (
-              <Image
-                width={1000}
-                height={1000}
-                src="/placeholder.jpg" // Плейсхолдер если нет изображения
-                alt="Placeholder image"
-                className="w-full max-w-[100%] rounded-lg shadow-xl"
-              />
-            )}
+            ) : null}
           </div>
         ))}
       </Slider>
@@ -112,7 +105,7 @@ const AboutLicense = ({ locale }) => {
         />
       )} */}
 
-      {/* <Link href={`/${locale}/about/licences`} className="w-full flex justify-center">
+      <Link href={`/${locale}/about/licences`} className="w-full flex justify-center">
         <motion.button className="flex gap-2 justify-center px-16 py-3.5 mt-10 text-base font-bold text-center text-red-400 border border-red-400 rounded-[100px]">
           <span>{t("Main.Banner.more")}</span>
           <img
@@ -122,7 +115,7 @@ const AboutLicense = ({ locale }) => {
             alt="Arrow icon"
           />
         </motion.button>
-      </Link> */}
+      </Link>
     </motion.div>
   );
 };

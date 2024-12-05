@@ -25,6 +25,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.ant-image-mask-info {
+	display: none !important;
+}
+
 .line-anima {
   animation: lineAnim 8s linear infinite;
   -webkit-animation: lineAnim 8s linear infinite;
