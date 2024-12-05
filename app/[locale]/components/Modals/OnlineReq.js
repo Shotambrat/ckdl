@@ -40,7 +40,6 @@ export default function ContactWithUs({ setState }) {
     const payload = {
       name: values.fullName,
       phone: phone,
-      birthDate: '696969', // Date of birth
       comment: values.comment || ''
     }
 

@@ -37,7 +37,6 @@ const Application = () => {
     const payload = {
       name: values.fullname,
       phone: phone,
-      birthDate: values.birthDate.format("DD.MM.YYYY"), // Format date as DD.MM.YYYY
       comment: values.comment,
     };
 
